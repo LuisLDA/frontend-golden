@@ -15,7 +15,7 @@ export const useFetch = (url) => {
       .then((json) => setData(json))
       .catch((error) => setError(error))
       .finally(() => setLoading(false));
-  }, []);
+  },[url]);
 
   return { data, error, loading };
 }

@@ -1,16 +1,13 @@
 import ImagenConComentarios from './componentes/imagenComentarios.jsx';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement } from 'chart.js'
-import {useFetch } from './useFetch'
+import { useFetch } from './useFetch'
 import { useState } from 'react';
 
 function App() {
 
   //Register arc element
   Chart.register(ArcElement);
-
-
-
   //Create pastel array with 3 elements
 
   const pastel = {
@@ -36,14 +33,12 @@ function App() {
     responsive: true,
   }
 
-  const page = 1
 
-  //Fetch data from API
+  const [page, setPage] = useState(1);
+  const { data, error, loading } = useFetch(`http://192.168.7.166:3000/posts?page=${page}`);
 
-
-  //Use fetch hook useeffect
-
-  const {data}= useFetch(`http://192.168.7.166:3000/posts?page=${page}`)
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error!</p>;
 
   return (
     <>
@@ -55,7 +50,9 @@ function App() {
             <div style={{
               display: 'flex',
               flexDirection: 'column',
-            }}>
+            }}
+              key={item._id}
+            >
               <p style={{
                 fontSize: '20px',
                 fontWeight: 'bold',
@@ -64,15 +61,15 @@ function App() {
               }}>{item.name}</p>
 
               <ImagenConComentarios
-              imagen="https://cloudfront-us-east-1.images.arcpublishing.com/infobae/UTHV4PIZJVF63HTO46MMB74ZWQ.jpg"
-              comentario1="Deserunt sint do ullamco consectetur deserunt."
-              comentario2="Cillum ea aliquip consectetur pariatur tempor minim minim esse est deserunt."
-              comentario3="Enim ex enim ad enim nulla aliqua deserunt eiusmod nisi elit enim nulla culpa."
-              comentario4="Aliquip eiusmod enim cillum eiusmod aliquip."
-              comentario5="Mollit duis consectetur enim consectetur ex voluptate irure nisi dolore quis adipisicing consectetur enim amet."
-            />
+                imagen="https://cloudfront-us-east-1.images.arcpublishing.com/infobae/UTHV4PIZJVF63HTO46MMB74ZWQ.jpg"
+                comentario1="Deserunt sint do ullamco consectetur deserunt."
+                comentario2="Cillum ea aliquip consectetur pariatur tempor minim minim esse est deserunt."
+                comentario3="Enim ex enim ad enim nulla aliqua deserunt eiusmod nisi elit enim nulla culpa."
+                comentario4="Aliquip eiusmod enim cillum eiusmod aliquip."
+                comentario5="Mollit duis consectetur enim consectetur ex voluptate irure nisi dolore quis adipisicing consectetur enim amet."
+              />
             </div>
-            
+
           </>
         ))}
 
@@ -88,16 +85,20 @@ function App() {
 
 
       <div className='botones'>
-        <button className='boton'>Anterior</button>
+        {page != 1 && <button className='boton'
+          onClick={() => {
+            console.log('Anterior')
+            setPage(page - 1)
+          }}
+        >Anterior</button>}
         <button className='boton'
-        onClick={() => {
-          console.log('Siguiente')
-          //Load more data and update the state load page + 1
+          onClick={() => {
+            console.log('Siguiente')
+            setPage(page + 1)
+            
+          }
+          }
 
-          
-        }
-        }
-        
         >Siguiente</button>
       </div>
     </>
